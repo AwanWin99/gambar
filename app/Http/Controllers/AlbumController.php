@@ -35,14 +35,16 @@ class AlbumController extends Controller
     public function store(Request $request)
     {
         $nama_album = $request->nama_album;
-        $deskripisi = $request->deskripisi;
+        $deskripsi = $request->deskripsi;
         $tanggal_dibuat = $request->tanggal_dibuat;
 
-        Album::create([
-            "nama_album" => $nama_album,
-            "deskripsi" => $deskripisi,
-            "tanggal_dibuat" => $tanggal_dibuat,
-        ]);
+        $dataAlbum = new Album();
+        $dataAlbum->nama_album = $nama_album;
+        $dataAlbum->deskripsi = $deskripsi;
+        $dataAlbum->tanggal_dibuat = $tanggal_dibuat;
+        $dataAlbum->save();
+
+        return redirect()->route("album.index");
     }
 
     /**

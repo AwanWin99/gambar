@@ -14,7 +14,7 @@ class album extends Model
 
     protected $fillable = [
         "id",
-        "nama",
+        "nama_album",
         "desktipsi",
         "tanggal_dibuat",
     ];

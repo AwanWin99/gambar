@@ -75,7 +75,15 @@ class FotoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $albums = Album::all();
+
+        $foto = Foto::where("id", "=", $id)->first();
+
+        $data = [
+            "albums" => $albums,
+            "foto" => $foto
+        ];
+        return view("foto.edit", $data);
     }
 
     /**
@@ -83,9 +91,33 @@ class FotoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $album = $request->album;
+        $judul = $request->judul;
+        $deskripsi = $request->deskripsi;
+
+        $updateFoto = [
+            "album_id" =>$album,
+            "judul" => $judul,
+        ];
+
+    if (!empty($deskripsi)) {
+        $updateFoto["deskripsi"] = $deskripsi;
     }
 
+    if ($request->hasFile("foto"))
+    {
+        $foto = $request->file("foto");
+        if ($foto->isValid()) {
+            $this->deleteFileFoto($id);
+            $namaFotoBaru = date("Y_m_d_H_i_s") .".". $foto->getClientOriginalExtension();
+            $foto->storeAs("/foto", $namaFotoBaru, "public");
+            $updateFoto["lokasi_file"]= "foto/{namaFotoBaru}";
+    }
+}
+Foto::where("id", "=", $id)->update($updateFoto);
+
+return redirect()->route("foto.index");
+    }
     private function deleteFileFoto(string $id) {
         $foto = Foto::where("id", $id)->first();
         if (Storage::disk("public")->exists($foto->lokasi_file))
